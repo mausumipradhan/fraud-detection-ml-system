@@ -13,7 +13,9 @@ import pandas as pd
 import os
 
 
-def generate(n_rows: int = 10000, fraud_rate: float = 0.002, seed: int = 42) -> pd.DataFrame:
+def generate(
+    n_rows: int = 10000, fraud_rate: float = 0.002, seed: int = 42
+) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     n_fraud = max(1, int(n_rows * fraud_rate))
     n_legit = n_rows - n_fraud
@@ -39,7 +41,11 @@ def generate(n_rows: int = 10000, fraud_rate: float = 0.002, seed: int = 42) -> 
         columns=cols,
     )
 
-    df = pd.concat([legit_df, fraud_df]).sample(frac=1, random_state=seed).reset_index(drop=True)
+    df = (
+        pd.concat([legit_df, fraud_df])
+        .sample(frac=1, random_state=seed)
+        .reset_index(drop=True)
+    )
     df["Class"] = df["Class"].astype(int)
     return df
 

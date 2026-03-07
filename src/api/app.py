@@ -45,7 +45,7 @@ explainer = FraudExplainer(model, feature_names=preprocessor.feature_names)
 
 # Drift detector is initialised lazily (needs reference data)
 drift_detector: DriftDetector | None = None
-_transactions_log = []          # in-memory store (replace with DB in prod)
+_transactions_log = []  # in-memory store (replace with DB in prod)
 
 
 def _confidence(prob: float) -> str:
@@ -57,6 +57,7 @@ def _confidence(prob: float) -> str:
 
 
 # ── Routes ────────────────────────────────────────────────────────────
+
 
 @app.route("/health", methods=["GET"])
 def health():
@@ -78,7 +79,7 @@ def predict():
         payload = TransactionRequest(**request.get_json(force=True))
     except ValidationError as e:
         return jsonify({"error": str(e)}), 400
-    
+
     raw = np.array(payload.features + [payload.amount], dtype=float)
     X = preprocessor.scaler.transform(raw.reshape(1, -1))
 
@@ -113,13 +114,18 @@ def metrics():
         report = drift_detector.check_drift()
         drift_status = "drifted" if (report and report.overall_drift) else "stable"
 
-    return jsonify({
-        "model": MODEL_TYPE,
-        "threshold": THRESHOLD,
-        "transactions_processed": len(_transactions_log),
-        "recent_fraud_rate": round(fraud_rate, 4),
-        "drift_status": drift_status,
-    }), 200
+    return (
+        jsonify(
+            {
+                "model": MODEL_TYPE,
+                "threshold": THRESHOLD,
+                "transactions_processed": len(_transactions_log),
+                "recent_fraud_rate": round(fraud_rate, 4),
+                "drift_status": drift_status,
+            }
+        ),
+        200,
+    )
 
 
 @app.route("/batch_predict", methods=["POST"])
@@ -142,10 +148,12 @@ def batch_predict():
         raw = np.array(payload.features + [payload.amount], dtype=float)
         X = preprocessor.scaler.transform(raw.reshape(1, -1))
         prob = float(model.predict_proba(X)[0, 1])
-        results.append({
-            "is_fraud": prob >= THRESHOLD,
-            "fraud_probability": round(prob, 4),
-        })
+        results.append(
+            {
+                "is_fraud": prob >= THRESHOLD,
+                "fraud_probability": round(prob, 4),
+            }
+        )
 
     return jsonify({"results": results}), 200
 

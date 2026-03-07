@@ -31,7 +31,7 @@ MODEL_REGISTRY = {
         n_estimators=300,
         max_depth=6,
         learning_rate=0.05,
-        scale_pos_weight=100,   # handles class imbalance
+        scale_pos_weight=100,  # handles class imbalance
         eval_metric="aucpr",
         random_state=42,
         use_label_encoder=False,
@@ -49,7 +49,9 @@ def train(config_path: str = "config.yaml", model_type: str | None = None) -> No
     model_type = model_type or cfg["model"]["type"]
 
     if model_type not in MODEL_REGISTRY:
-        raise ValueError(f"Unknown model '{model_type}'. Choose from {list(MODEL_REGISTRY)}")
+        raise ValueError(
+            f"Unknown model '{model_type}'. Choose from {list(MODEL_REGISTRY)}"
+        )
 
     # ── Load data ──────────────────────────────────────────────────────
     data_path = cfg["data"]["raw_path"]

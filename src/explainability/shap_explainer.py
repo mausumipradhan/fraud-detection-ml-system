@@ -67,9 +67,14 @@ class FraudExplainer:
 
         return {
             "top_features": top_features,
-            "base_value": round(float(explainer.expected_value if not isinstance(
-                explainer.expected_value, list
-            ) else explainer.expected_value[1]), 4),
+            "base_value": round(
+                float(
+                    explainer.expected_value
+                    if not isinstance(explainer.expected_value, list)
+                    else explainer.expected_value[1]
+                ),
+                4,
+            ),
         }
 
     def plot_summary(
@@ -82,7 +87,8 @@ class FraudExplainer:
             shap_values = shap_values[1]
 
         shap.summary_plot(
-            shap_values, X,
+            shap_values,
+            X,
             feature_names=self.feature_names,
             max_display=max_display,
             show=False,
@@ -92,7 +98,10 @@ class FraudExplainer:
         return plt.gcf()
 
     def plot_waterfall(
-        self, x: np.ndarray, X_background: np.ndarray | None = None, save_path: str | None = None
+        self,
+        x: np.ndarray,
+        X_background: np.ndarray | None = None,
+        save_path: str | None = None,
     ):
         """Waterfall plot for a single prediction."""
         explainer = self._get_explainer(X_background)

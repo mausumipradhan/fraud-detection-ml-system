@@ -18,7 +18,9 @@ def _make_mock_model(probs):
 def test_evaluate_returns_dict():
     np.random.seed(42)
     y_test = np.array([0] * 90 + [1] * 10)
-    probs = np.where(y_test == 1, np.random.uniform(0.7, 1.0, 100), np.random.uniform(0.0, 0.3, 100))
+    probs = np.where(
+        y_test == 1, np.random.uniform(0.7, 1.0, 100), np.random.uniform(0.0, 0.3, 100)
+    )
     model = _make_mock_model(probs)
     X_test = np.zeros((100, 29))
 

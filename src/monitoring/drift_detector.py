@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 @dataclass
 class DriftReport:
     timestamp: str
-    feature_drifts: dict          # {feature: {"psi": float, "ks_pvalue": float, "drifted": bool}}
+    feature_drifts: (
+        dict  # {feature: {"psi": float, "ks_pvalue": float, "drifted": bool}}
+    )
     overall_drift: bool
     drifted_features: list[str]
     recommendation: str
@@ -44,7 +46,9 @@ class DriftDetector:
         drift_threshold: float = 0.05,
     ):
         self.reference_data = reference_data
-        self.feature_names = feature_names or [f"V{i+1}" for i in range(reference_data.shape[1])]
+        self.feature_names = feature_names or [
+            f"V{i+1}" for i in range(reference_data.shape[1])
+        ]
         self.window_size = window_size
         self.drift_threshold = drift_threshold
         self._buffer: deque = deque(maxlen=window_size)
@@ -75,7 +79,9 @@ class DriftDetector:
             psi = self._compute_psi(ref_col, cur_col)
             ks_stat, ks_pvalue = stats.ks_2samp(ref_col, cur_col)
 
-            is_drifted = psi > self.PSI_THRESHOLD or ks_pvalue < self.KS_PVALUE_THRESHOLD
+            is_drifted = (
+                psi > self.PSI_THRESHOLD or ks_pvalue < self.KS_PVALUE_THRESHOLD
+            )
 
             feature_drifts[name] = {
                 "psi": round(psi, 4),
@@ -98,7 +104,9 @@ class DriftDetector:
         )
 
         if overall:
-            logger.warning("DRIFT DETECTED — %d features drifted: %s", len(drifted), drifted)
+            logger.warning(
+                "DRIFT DETECTED — %d features drifted: %s", len(drifted), drifted
+            )
         else:
             logger.info("No significant drift detected.")
 
@@ -106,7 +114,9 @@ class DriftDetector:
         return report
 
     # ------------------------------------------------------------------
-    def _compute_psi(self, reference: np.ndarray, current: np.ndarray, bins: int = 10) -> float:
+    def _compute_psi(
+        self, reference: np.ndarray, current: np.ndarray, bins: int = 10
+    ) -> float:
         """Population Stability Index."""
         breakpoints = np.percentile(reference, np.linspace(0, 100, bins + 1))
         breakpoints = np.unique(breakpoints)

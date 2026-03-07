@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class FraudPreprocessor:
     """
     End-to-end preprocessing pipeline for credit card fraud detection.
-    
+
     Steps:
         1. Drop duplicates
         2. Scale 'Amount' and 'Time' features
@@ -54,7 +54,8 @@ class FraudPreprocessor:
         X_scaled = self._scale_fit(X)
 
         X_train, X_test, y_train, y_test = train_test_split(
-            X_scaled, y.values,
+            X_scaled,
+            y.values,
             test_size=test_size,
             random_state=self.random_state,
             stratify=y,
@@ -66,7 +67,8 @@ class FraudPreprocessor:
         self._fitted = True
         logger.info(
             "Preprocessing complete | train=%d test=%d | fraud_ratio_train=%.4f",
-            len(X_train), len(X_test),
+            len(X_train),
+            len(X_test),
             y_train.mean(),
         )
         return X_train, X_test, y_train, y_test
@@ -106,7 +108,9 @@ class FraudPreprocessor:
         X = df.drop(columns=[target_col])
         logger.info(
             "Class distribution — 0: %d  1: %d  (fraud %.4f%%)",
-            (y == 0).sum(), (y == 1).sum(), y.mean() * 100,
+            (y == 0).sum(),
+            (y == 1).sum(),
+            y.mean() * 100,
         )
         return X, y
 
@@ -118,7 +122,5 @@ class FraudPreprocessor:
     ) -> tuple[np.ndarray, np.ndarray]:
         sm = SMOTE(random_state=self.random_state)
         X_res, y_res = sm.fit_resample(X, y)
-        logger.info(
-            "SMOTE applied | before: %d  after: %d", len(X), len(X_res)
-        )
+        logger.info("SMOTE applied | before: %d  after: %d", len(X), len(X_res))
         return X_res, y_res

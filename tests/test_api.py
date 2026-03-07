@@ -31,15 +31,17 @@ def mock_preprocessor():
 
 @pytest.fixture
 def client(mock_model, mock_preprocessor):
-    with patch("joblib.load") as mock_load, \
-         patch("builtins.open", MagicMock()), \
-         patch("yaml.safe_load", return_value={
-             "model": {"type": "xgboost", "threshold": 0.5, "save_path": "models/"},
-             "api": {"host": "0.0.0.0", "port": 5000, "debug": False},
-         }):
+    with patch("joblib.load") as mock_load, patch("builtins.open", MagicMock()), patch(
+        "yaml.safe_load",
+        return_value={
+            "model": {"type": "xgboost", "threshold": 0.5, "save_path": "models/"},
+            "api": {"host": "0.0.0.0", "port": 5000, "debug": False},
+        },
+    ):
         mock_load.side_effect = [mock_model, mock_preprocessor]
 
         from src.api.app import app
+
         app.config["TESTING"] = True
         with app.test_client() as c:
             yield c

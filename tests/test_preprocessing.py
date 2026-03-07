@@ -13,9 +13,15 @@ from src.preprocessing.validator import TransactionRequest
 # ── FraudPreprocessor ─────────────────────────────────────────────────
 def _make_df(n_legit=1000, n_fraud=20):
     rng = np.random.default_rng(42)
-    legit = pd.DataFrame(rng.standard_normal((n_legit, 30)), columns=[f"V{i}" for i in range(29)] + ["Amount"])
+    legit = pd.DataFrame(
+        rng.standard_normal((n_legit, 30)),
+        columns=[f"V{i}" for i in range(29)] + ["Amount"],
+    )
     legit["Class"] = 0
-    fraud = pd.DataFrame(rng.standard_normal((n_fraud, 30)), columns=[f"V{i}" for i in range(29)] + ["Amount"])
+    fraud = pd.DataFrame(
+        rng.standard_normal((n_fraud, 30)),
+        columns=[f"V{i}" for i in range(29)] + ["Amount"],
+    )
     fraud["Class"] = 1
     return pd.concat([legit, fraud], ignore_index=True).sample(frac=1, random_state=42)
 
@@ -52,11 +58,13 @@ def test_valid_transaction():
 
 def test_invalid_feature_length():
     from pydantic import ValidationError
+
     with pytest.raises(ValidationError):
         TransactionRequest(features=[0.1] * 10, amount=100.0)
 
 
 def test_negative_amount():
     from pydantic import ValidationError
+
     with pytest.raises(ValidationError):
         TransactionRequest(features=[0.1] * 29, amount=-5.0)
