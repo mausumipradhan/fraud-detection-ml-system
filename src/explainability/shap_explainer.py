@@ -3,7 +3,6 @@ explainability/shap_explainer.py
 SHAP-based model explanations for individual predictions and global importance.
 """
 
-
 import logging
 from typing import Any
 
@@ -69,7 +68,8 @@ class FraudExplainer:
         pairs = sorted(zip(names, shap_vals), key=lambda p: abs(p[1]), reverse=True)
 
         top_features = [
-            {"feature": name, "impact": round(float(val), 4)} for name, val in pairs[:top_n]
+            {"feature": name, "impact": round(float(val), 4)}
+            for name, val in pairs[:top_n]
         ]
 
         return {
@@ -121,10 +121,16 @@ class FraudExplainer:
         if isinstance(shap_values, list):
             shap_values = shap_values[1]
 
-        shap_expl = shap.Explanation(values=shap_values[0], 
-                                     base_values=explainer.expected_value[1] if isinstance(explainer.expected_value, list) else explainer.expected_value,
-                                     data=x.reshape(1, -1),
-                                     feature_names=self.feature_names)
+        shap_expl = shap.Explanation(
+            values=shap_values[0],
+            base_values=(
+                explainer.expected_value[1]
+                if isinstance(explainer.expected_value, list)
+                else explainer.expected_value
+            ),
+            data=x.reshape(1, -1),
+            feature_names=self.feature_names,
+        )
         shap.plots.waterfall(shap_expl, show=False)
 
         if save_path:
