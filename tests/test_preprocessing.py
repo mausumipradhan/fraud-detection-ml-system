@@ -52,8 +52,8 @@ def test_transform_before_fit_raises():
 
 # ── Validator ──────────────────────────────────────────────────────────
 def test_valid_transaction():
-    tx = TransactionRequest(features=[0.1] * 29, amount=100.0)
-    assert len(tx.features) == 29
+    tx = TransactionRequest(features=[0.1] * 28, amount=100.0)
+    assert len(tx.features) == 28
 
 
 def test_invalid_feature_length():
@@ -67,4 +67,4 @@ def test_negative_amount():
     from pydantic import ValidationError
 
     with pytest.raises(ValidationError):
-        TransactionRequest(features=[0.1] * 29, amount=-5.0)
+        TransactionRequest(features=[0.1] * 28, amount=-5.0)
