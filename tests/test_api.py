@@ -25,21 +25,29 @@ def mock_model():
 @pytest.fixture
 def mock_preprocessor():
     p = MagicMock()
-    p.scaler.transform.return_value = np.zeros((1, 29))
-    p.feature_names = [f"V{i}" for i in range(29)]
+    p.scaler.transform.return_value = np.zeros((1, 28))
+    p.feature_names = [f"V{i}" for i in range(28)]
     return p
 
 
 @pytest.fixture
 def client(mock_model, mock_preprocessor):
-    with patch("joblib.load") as mock_load, patch("builtins.open", MagicMock()), patch(
-        "yaml.safe_load",
-        return_value={
-            "model": {"type": "xgboost", "threshold": 0.5, "save_path": "models/"},
-            "api": {"host": "0.0.0.0", "port": 5000, "debug": False},
-        },
-    ):
+    with patch("joblib.load") as mock_load, \
+         patch("builtins.open", MagicMock()), \
+         patch(
+            "yaml.safe_load",
+            return_value={
+                "model": {"type": "xgboost", "threshold": 0.5, "save_path": "models/"},
+                "api": {"host": "0.0.0.0", "port": 5000, "debug": False},
+            },
+         ), \
+         patch("src.api.app.FraudExplainer") as mock_explainer:
+
         mock_load.side_effect = [mock_model, mock_preprocessor]
+
+        # mock SHAP explainer
+        explainer_instance = mock_explainer.return_value
+        explainer_instance.explain_instance.return_value = {"V1": 0.12, "V2": -0.05}
 
         from src.api.app import app
 
@@ -47,11 +55,10 @@ def client(mock_model, mock_preprocessor):
         with app.test_client() as c:
             yield c
 
-
 # ── Tests ─────────────────────────────────────────────────────────────
 def make_payload(prob=0.05):
     return {
-        "features": [float(i) * 0.01 for i in range(29)],
+        "features": [float(i) * 0.01 for i in range(28)],
         "amount": 150.0,
     }
 
