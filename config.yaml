@@ -1,0 +1,24 @@
+model:
+  type: xgboost          # Options: xgboost, random_forest, logistic_regression
+  threshold: 0.5         # Decision threshold for fraud classification
+  save_path: models/
+
+data:
+  raw_path: data/creditcard.csv
+  test_size: 0.2
+  random_state: 42
+  use_smote: true
+
+api:
+  host: 0.0.0.0
+  port: 5000
+  debug: false
+
+monitoring:
+  drift_threshold: 0.05
+  window_size: 1000      # Number of recent transactions to monitor
+  alert_email: ""        # Optional: email for drift alerts
+
+logging:
+  level: INFO
+  file: logs/app.log
