@@ -3,15 +3,16 @@ dashboard/streamlit_app.py
 Real-time monitoring dashboard for the fraud detection system.
 """
 
-import streamlit as st
-import pandas as pd
-import numpy as np
-import requests
-import plotly.graph_objects as go
-import plotly.express as px
-from datetime import datetime
-import time
 import random
+import time
+from datetime import datetime
+
+import numpy as np
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import requests
+import streamlit as st
 
 st.set_page_config(
     page_title="Fraud Detection Dashboard",
@@ -66,13 +67,15 @@ if st.button("🚀 Run Simulation"):
 
         try:
             resp = requests.post(f"{API_URL}/predict", json=payload, timeout=5).json()
-            results.append({
-                "Transaction": i + 1,
-                "Fraud Probability": resp.get("fraud_probability", 0),
-                "Is Fraud": "🚨 Fraud" if resp.get("is_fraud") else "✅ Legit",
-                "Confidence": resp.get("confidence", "N/A"),
-                "Timestamp": resp.get("timestamp", ""),
-            })
+            results.append(
+                {
+                    "Transaction": i + 1,
+                    "Fraud Probability": resp.get("fraud_probability", 0),
+                    "Is Fraud": "🚨 Fraud" if resp.get("is_fraud") else "✅ Legit",
+                    "Confidence": resp.get("confidence", "N/A"),
+                    "Timestamp": resp.get("timestamp", ""),
+                }
+            )
         except Exception as e:
             results.append({"Transaction": i + 1, "Error": str(e)})
 
@@ -84,7 +87,9 @@ if st.button("🚀 Run Simulation"):
     # Probability histogram
     probs = df["Fraud Probability"].dropna()
     fig = px.histogram(
-        probs, nbins=20, title="Fraud Probability Distribution",
+        probs,
+        nbins=20,
+        title="Fraud Probability Distribution",
         labels={"value": "Fraud Probability", "count": "Count"},
         color_discrete_sequence=["#E63946"],
     )
@@ -98,7 +103,7 @@ with st.expander("Predict a single transaction"):
     amount = st.number_input("Amount ($)", 0.0, 10000.0, 150.0)
     features_input = st.text_area(
         "Enter 29 feature values (space-separated)",
-        value=" ".join([str(round(random.gauss(0, 1), 3)) for _ in range(29)])
+        value=" ".join([str(round(random.gauss(0, 1), 3)) for _ in range(29)]),
     )
 
     if st.button("Predict"):
@@ -118,9 +123,15 @@ with st.expander("Predict a single transaction"):
                 lambda x: "Increases Risk ↑" if x > 0 else "Decreases Risk ↓"
             )
             fig = px.bar(
-                feat_df.head(10), x="impact", y="feature", orientation="h",
+                feat_df.head(10),
+                x="impact",
+                y="feature",
+                orientation="h",
                 color="direction",
-                color_discrete_map={"Increases Risk ↑": "#E63946", "Decreases Risk ↓": "#2A9D8F"},
+                color_discrete_map={
+                    "Increases Risk ↑": "#E63946",
+                    "Decreases Risk ↓": "#2A9D8F",
+                },
                 title="SHAP Feature Contributions",
             )
             st.plotly_chart(fig, use_container_width=True)
