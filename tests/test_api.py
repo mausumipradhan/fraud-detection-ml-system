@@ -3,12 +3,13 @@ tests/test_api.py
 Unit tests for the Flask API endpoints.
 """
 
-import pytest
-import numpy as np
-from unittest.mock import patch, MagicMock
 import json
-import sys
 import os
+import sys
+from unittest.mock import MagicMock, patch
+
+import numpy as np
+import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 

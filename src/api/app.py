@@ -3,20 +3,20 @@ api/app.py
 Flask REST API for real-time credit card fraud detection.
 """
 
-import os
 import logging
-import yaml
-import numpy as np
-import joblib
+import os
 from datetime import datetime, timezone
 
-from flask import Flask, request, jsonify
+import joblib
+import numpy as np
+import yaml
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from pydantic import ValidationError
 
-from src.preprocessing.validator import TransactionRequest
 from src.explainability.shap_explainer import FraudExplainer
 from src.monitoring.drift_detector import DriftDetector
+from src.preprocessing.validator import TransactionRequest
 
 # ── Logging ──────────────────────────────────────────────────────────
 logging.basicConfig(

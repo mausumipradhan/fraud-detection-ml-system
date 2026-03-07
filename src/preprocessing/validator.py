@@ -3,8 +3,9 @@ preprocessing/validator.py
 Pydantic schemas for validating API request payloads.
 """
 
-from pydantic import BaseModel, field_validator
 from typing import List
+
+from pydantic import BaseModel, field_validator
 
 
 class TransactionRequest(BaseModel):

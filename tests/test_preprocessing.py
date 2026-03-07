@@ -3,9 +3,10 @@ tests/test_preprocessing.py
 Unit tests for the preprocessing pipeline.
 """
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
+
 from src.preprocessing.pipeline import FraudPreprocessor
 from src.preprocessing.validator import TransactionRequest
 

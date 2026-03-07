@@ -3,20 +3,14 @@ models/evaluate.py
 Evaluation utilities: metrics, ROC curve, confusion matrix.
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics import (
-    classification_report,
-    confusion_matrix,
-    roc_auc_score,
-    precision_recall_curve,
-    roc_curve,
-    f1_score,
-    precision_score,
-    recall_score,
-    average_precision_score,
-)
 import logging
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.metrics import (average_precision_score, classification_report,
+                             confusion_matrix, f1_score,
+                             precision_recall_curve, precision_score,
+                             recall_score, roc_auc_score, roc_curve)
 
 logger = logging.getLogger(__name__)
 

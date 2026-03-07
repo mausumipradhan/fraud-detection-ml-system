@@ -3,19 +3,19 @@ models/train.py
 Training pipeline for Logistic Regression, Random Forest, and XGBoost.
 """
 
-import os
 import logging
-import yaml
+import os
+
+import joblib
 import numpy as np
 import pandas as pd
-import joblib
-
-from sklearn.linear_model import LogisticRegression
+import yaml
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 
-from src.preprocessing.pipeline import FraudPreprocessor
 from src.models.evaluate import evaluate_model
+from src.preprocessing.pipeline import FraudPreprocessor
 
 logger = logging.getLogger(__name__)
 

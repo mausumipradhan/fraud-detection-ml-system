@@ -4,12 +4,13 @@ Statistical data drift detection using Population Stability Index (PSI)
 and Kolmogorov-Smirnov test.
 """
 
+import logging
+from collections import deque
+from dataclasses import dataclass, field
+from datetime import datetime
+
 import numpy as np
 from scipy import stats
-import logging
-from dataclasses import dataclass, field
-from collections import deque
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 

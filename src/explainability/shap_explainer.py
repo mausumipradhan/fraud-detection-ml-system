@@ -3,11 +3,12 @@ explainability/shap_explainer.py
 SHAP-based model explanations for individual predictions and global importance.
 """
 
-import numpy as np
-import shap
-import matplotlib.pyplot as plt
 import logging
 from typing import Any
+
+import matplotlib.pyplot as plt
+import numpy as np
+import shap
 
 logger = logging.getLogger(__name__)
 
