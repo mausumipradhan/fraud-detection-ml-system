@@ -38,8 +38,37 @@ MODEL_DIR = cfg["model"]["save_path"]
 MODEL_TYPE = cfg["model"]["type"]
 THRESHOLD = cfg["model"]["threshold"]
 
-model = joblib.load(os.path.join(MODEL_DIR, f"{MODEL_TYPE}_model.joblib"))
-preprocessor = joblib.load(os.path.join(MODEL_DIR, "preprocessor.joblib"))
+model_path = os.path.join(MODEL_DIR, f"{MODEL_TYPE}_model.joblib")
+preprocessor_path = os.path.join(MODEL_DIR, "preprocessor.joblib")
+
+# Create dummy artifacts if missing (useful for CI / Docker startup)
+if not os.path.exists(model_path) or not os.path.exists(preprocessor_path):
+    from sklearn.dummy import DummyClassifier
+    from sklearn.preprocessing import StandardScaler
+
+    logger.warning("Model artifacts missing — creating dummy model for startup.")
+
+    os.makedirs(MODEL_DIR, exist_ok=True)
+
+    dummy_model = DummyClassifier()
+    X_dummy = np.zeros((10, 29))
+    y_dummy = np.zeros(10)
+    dummy_model.fit(X_dummy, y_dummy)
+
+    scaler = StandardScaler().fit(X_dummy)
+
+    from types import SimpleNamespace
+
+dummy_preprocessor = SimpleNamespace(
+    scaler=scaler,
+    feature_names=[f"V{i}" for i in range(29)]
+)
+
+joblib.dump(dummy_model, model_path)
+joblib.dump(dummy_preprocessor, preprocessor_path)
+
+model = joblib.load(model_path)
+preprocessor = joblib.load(preprocessor_path)
 
 explainer = FraudExplainer(model, feature_names=preprocessor.feature_names)
 
