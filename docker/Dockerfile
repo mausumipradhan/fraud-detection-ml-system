@@ -17,6 +17,9 @@ COPY . .
 # Create required directories
 RUN mkdir -p models data logs
 
+# Ensure the repo root is on the Python path so `src` is importable
+ENV PYTHONPATH=/app
+
 # Generate synthetic training data and train the model
 # This ensures model artefacts exist at image build time.
 # Models are intentionally excluded from git (.gitignore), so we
