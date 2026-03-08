@@ -5,8 +5,8 @@ Evaluation utilities: metrics, ROC curve, confusion matrix.
 
 import logging
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.metrics import (
     average_precision_score,
     classification_report,
