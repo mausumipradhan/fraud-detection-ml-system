@@ -11,26 +11,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
+# Copy source
 COPY . .
 
-# Tell Python where the project root is
-ENV PYTHONPATH=/app
+# Create required directories
+RUN mkdir -p models data logs
 
-# Create dummy model so API can start in CI
-RUN mkdir -p models && python - <<EOF
-import joblib
-import numpy as np
-from sklearn.dummy import DummyClassifier
+# Generate synthetic training data and train the model
+# This ensures model artefacts exist at image build time.
+# Models are intentionally excluded from git (.gitignore), so we
+# produce them here instead of expecting them to be present in the repo.
+RUN python scripts/generate_sample_data.py --rows 10000 --fraud_rate 0.01 \
+        --output data/creditcard.csv \
+    && python scripts/train_model.py --model xgboost
 
-model = DummyClassifier()
-model.fit(np.zeros((10,29)), np.zeros(10))
-
-joblib.dump(model, "models/xgboost_model.joblib")
-EOF
-
-# Expose API port
+# Expose Flask port
 EXPOSE 5000
 
-# Start API
+# Default command: start the API
 CMD ["python", "src/api/app.py"]
