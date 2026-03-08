@@ -3,25 +3,30 @@ models/evaluate.py
 Evaluation utilities: metrics, ROC curve, confusion matrix.
 """
 
+import logging
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import (
+    average_precision_score,
     classification_report,
     confusion_matrix,
-    roc_auc_score,
-    precision_recall_curve,
-    roc_curve,
     f1_score,
     precision_score,
     recall_score,
-    average_precision_score,
+    roc_auc_score,
+    roc_curve,
 )
-import logging
 
 logger = logging.getLogger(__name__)
 
 
-def evaluate_model(model, X_test: np.ndarray, y_test: np.ndarray, threshold: float = 0.5) -> dict:
+def evaluate_model(
+    model,
+    X_test: np.ndarray,
+    y_test: np.ndarray,
+    threshold: float = 0.5,
+) -> dict:
     """
     Compute comprehensive evaluation metrics.
 
@@ -44,12 +49,20 @@ def evaluate_model(model, X_test: np.ndarray, y_test: np.ndarray, threshold: flo
     for k, v in metrics.items():
         logger.info("  %s: %s", k, v)
 
-    logger.info("\n%s", classification_report(y_test, y_pred, target_names=["Legit", "Fraud"]))
+    logger.info(
+        "\n%s",
+        classification_report(y_test, y_pred, target_names=["Legit", "Fraud"]),
+    )
 
     return metrics
 
 
-def plot_roc_curve(model, X_test: np.ndarray, y_test: np.ndarray, save_path: str | None = None):
+def plot_roc_curve(
+    model,
+    X_test: np.ndarray,
+    y_test: np.ndarray,
+    save_path: str | None = None,
+):
     """Plot and optionally save ROC curve."""
     y_prob = model.predict_proba(X_test)[:, 1]
     fpr, tpr, _ = roc_curve(y_test, y_prob)
@@ -69,7 +82,11 @@ def plot_roc_curve(model, X_test: np.ndarray, y_test: np.ndarray, save_path: str
     return plt.gcf()
 
 
-def plot_confusion_matrix(y_test: np.ndarray, y_pred: np.ndarray, save_path: str | None = None):
+def plot_confusion_matrix(
+    y_test: np.ndarray,
+    y_pred: np.ndarray,
+    save_path: str | None = None,
+):
     """Plot confusion matrix heatmap."""
     import seaborn as sns
 
