@@ -8,14 +8,15 @@ Usage:
     python scripts/train_model.py --model random_forest --config config.yaml
 """
 
-import argparse
-import logging
 import os
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.models.train import train
+import argparse  # noqa: E402
+import logging  # noqa: E402
+
+from src.models.train import train  # noqa: E402
 
 logging.basicConfig(
     level=logging.INFO,
@@ -47,3 +48,4 @@ if __name__ == "__main__":
     print("\n📊 Metrics:")
     for k, v in metrics.items():
         print(f"   {k}: {v}")
+
