@@ -7,6 +7,7 @@ Usage:
     python scripts/train_model.py --model xgboost
     python scripts/train_model.py --model random_forest --config config.yaml
 """
+
 import argparse
 import logging
 import os
@@ -18,7 +19,7 @@ from src.models.train import train
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s \u2014 %(message)s",
+    format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
 )
 
 
@@ -46,5 +47,3 @@ if __name__ == "__main__":
     print("\n📊 Metrics:")
     for k, v in metrics.items():
         print(f"   {k}: {v}")
-
-
