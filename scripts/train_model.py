@@ -13,14 +13,14 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import argparse  # noqa: E402
-import logging  # noqa: E402
+import argparse
+import logging
 
-from src.models.train import train  # noqa: E402
+from src.models.train import train
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
+    format="%(asctime)s [%(levelname)s] %(name)s \u2014 %(message)s",
 )
 
 
@@ -48,4 +48,5 @@ if __name__ == "__main__":
     print("\n📊 Metrics:")
     for k, v in metrics.items():
         print(f"   {k}: {v}")
+
 
