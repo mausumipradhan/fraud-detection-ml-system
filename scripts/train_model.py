@@ -7,14 +7,12 @@ Usage:
     python scripts/train_model.py --model xgboost
     python scripts/train_model.py --model random_forest --config config.yaml
 """
-
+import argparse
+import logging
 import os
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-import argparse
-import logging
 
 from src.models.train import train
 
